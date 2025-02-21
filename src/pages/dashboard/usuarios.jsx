@@ -231,13 +231,7 @@ export function Usuarios() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-10 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                    <th className="px-20 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-10 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Documento</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número Documento</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Género</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol Asignado</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th className="px-10 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                   </tr>
@@ -246,15 +240,11 @@ export function Usuarios() {
                   {currentUsuarios.map((user) => (
                     <tr key={user.id_usuario}>
                       <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{user.nombre}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{user.email}</td>
+
                       <td className="px-4 py-4 whitespace-nowrap text-sm">
                         {roles.find((role) => role.id_rol === user.id_rol)?.nombre || "Rol no encontrado"}
                       </td>
-                      <td className="px-10 py-4 whitespace-nowrap text-sm">{user.tipo_documento}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{user.numero_documento}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{user.genero}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{user.telefono}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">{user.direccion}</td>
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => toggleActivo(user.id_usuario, user.estado)}

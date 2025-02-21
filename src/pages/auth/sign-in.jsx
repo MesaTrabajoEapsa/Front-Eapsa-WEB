@@ -12,23 +12,27 @@ import { useAuth } from "@/context/authContext";
 import { debounce } from 'lodash';
 
 export function SignIn() {
-  const [email, setEmail] = useState("");
+  const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [nombreError, setNombreError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { login, updatePermissions } = useAuth();
 
-  // Validar email en tiempo real
-  const validateEmail = debounce((value) => {
+  const validateNombre = debounce((value) => {
     if (!value) {
-      setEmailError("El campo de correo electrónico es obligatorio.");
-    } else if (value.length < 4 || !value.includes("@")) {
-      setEmailError("Ingrese un correo electrónico válido.");
+      setNombreError("El campo nombre es obligatorio.");
+    } else if (value.length < 3 || value.length > 50) {
+      setNombreError("El nombre debe tener entre 3 y 50 caracteres.");
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+      setNombreError("El nombre solo puede contener letras y espacios.");
+    } else if (/\s{2,}/.test(value)) {
+      setNombreError("El nombre no puede contener múltiples espacios seguidos.");
     } else {
-      setEmailError(""); // Limpiar errores si es válido
+      setNombreError(""); 
     }
   }, 300);
+  
 
   // Validar contraseña en tiempo real
   const validatePassword = debounce((value) => {
@@ -46,14 +50,14 @@ export function SignIn() {
     e.preventDefault();
 
     // Limpiar errores anteriores
-    setEmailError("");
+    setNombreError("");
     setPasswordError("");
 
     // Realizar la validación antes del envío
-    validateEmail(email);
+    validateNombre(nombre);
     validatePassword(password);
 
-    if (emailError || passwordError) {
+    if (nombreError || passwordError) {
       return; // Evitar envío si hay errores
     }
 
@@ -71,7 +75,7 @@ export function SignIn() {
 
     try {
       const response = await axios.post("http://localhost:3005/api/usuarios/login", {
-        email,
+        nombre,
         password,
       });
 
@@ -85,7 +89,7 @@ export function SignIn() {
           },
         });
 
-        const user = userResponse.data.find(user => user.email === email);
+        const user = userResponse.data.find(user => user.nombre === nombre);
 
         if (!user.estado) {
           Swal.fire({
@@ -142,15 +146,15 @@ export function SignIn() {
                 <Input
                   size="md"
                   placeholder=""
-                  className={`w-full border-gray-300 rounded-lg focus:border-lime-800 focus:ring-1 transition duration-300 ${emailError ? 'border-red-500 animate-pulse' : ''}`}
-                  value={email}
+                  className={`w-full border-gray-300 rounded-lg focus:border-lime-800 focus:ring-1 transition duration-300 ${nombreError ? 'border-red-500 animate-pulse' : ''}`}
+                  value={nombre}
                   onChange={(e) => {
-                    setEmail(e.target.value);
-                    validateEmail(e.target.value);
+                    setNombre(e.target.value);
+                    validateNombre(e.target.value);
                   }}
                 />
-                <Typography className={`text-red-500 text-sm transition-opacity duration-300 ease-in-out ${emailError ? 'opacity-100' : 'opacity-0'}`}>
-                  {emailError}
+                <Typography className={`text-red-500 text-sm transition-opacity duration-300 ease-in-out ${nombreError ? 'opacity-100' : 'opacity-0'}`}>
+                  {nombreError}
                 </Typography>
               </div>
               <div>

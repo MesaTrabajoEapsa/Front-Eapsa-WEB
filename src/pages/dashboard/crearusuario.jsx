@@ -73,20 +73,7 @@ const CrearUsuario = ({
       errors.nombre = 'El nombre no debe incluir caracteres especiales ni números.';
     } 
   
-    // Validación del email
-    if (!user.email) {
-      errors.email = 'El correo electrónico es obligatorio.';
-    } else if (user.email.length < 5) {
-      errors.email = 'El correo electrónico debe tener al menos 5 caracteres.';
-    } else if (user.email.length > 30) {
-      errors.email = 'El correo electrónico no debe exceder los 30 caracteres.';
-    } else if (!/^[A-Za-z0-9._%+-]+/.test(user.email.split('@')[0])) {
-      errors.email = 'La parte local del correo electrónico (antes del @) debe ser alfanumérica y puede incluir ._%+-';
-    } else if (!/@/.test(user.email)) {
-      errors.email = 'El correo electrónico debe contener un símbolo @.';
-    } else if (!/^[A-Za-z0-9.-]+\.[A-Z]{2,}$/i.test(user.email.split('@')[1])) {
-      errors.email = 'El dominio del correo electrónico (después del @) debe tener un formato válido.';
-    } 
+
   
     // Validación de la contraseña
     if (!editMode) {
@@ -104,55 +91,6 @@ const CrearUsuario = ({
         errors.password = 'La contraseña debe contener al menos un carácter especial: !@#$%^&*()_+={}[]:;\'"<>,.?/\\|-';
       }
     }
-  
-    if (!user.tipo_documento) {
-      errors.tipo_documento = "Debe seleccionar un tipo de documento.";
-    }
-  
-    if (!user.numero_documento) {
-      errors.numero_documento = "Debe ingresar un número de documento.";
-  } else if (!/^\d+$/.test(user.numero_documento)) {
-      errors.numero_documento = "El número de documento solo debe contener números.";
-  } else if (user.numero_documento.length < 8) {
-      errors.numero_documento = "El número de documento debe tener al menos 8 dígitos.";
-  } else if (user.numero_documento.length > 10) {
-      errors.numero_documento = "El número de documento no puede exceder 10 dígitos.";
-  }
-  
-  
-    if (!user.genero) {
-      errors.genero = "Debe seleccionar un género.";
-    }
-  
-    // Validación para nacionalidad
-if (!user.nacionalidad) {
-  errors.nacionalidad = "Debe ingresar una nacionalidad.";
-} else if (user.nacionalidad.length < 4) {
-  errors.nacionalidad = "La nacionalidad debe tener al menos 4 letras.";
-} else if (user.nacionalidad.length > 15) {
-  errors.nacionalidad = "La nacionalidad no puede exceder 15 letras.";
-} else if (!/^[a-zA-Z]+$/.test(user.nacionalidad)) {
-  errors.nacionalidad = "La nacionalidad solo debe contener letras.";
-}
-
-// Validación para teléfono
-if (!user.telefono) {
-  errors.telefono = "Debe ingresar un número de teléfono.";
-} else if (!/^\d+$/.test(user.telefono)) {
-  errors.telefono = "El número de teléfono solo debe contener números.";
-} else if (user.telefono.length < 6) {
-  errors.telefono = "El número de teléfono debe tener al menos 6 dígitos.";
-} else if (user.telefono.length > 10) {
-  errors.telefono = "El número de teléfono no puede exceder 10 dígitos.";
-}
-
-if (!user.direccion) {
-  errors.direccion = "Debe ingresar una dirección.";
-} else if (user.direccion.length < 5) {
-  errors.direccion = "La dirección debe tener al menos 5 caracteres.";
-} else if (user.direccion.length > 25) {
-  errors.direccion = "La dirección no puede exceder 25 caracteres.";
-}
 
   
     if (!user.id_rol) {
@@ -179,7 +117,7 @@ if (!user.direccion) {
       await debounceValidate(updatedUser);
   
       // Validación en tiempo real para duplicados
-      if (["nombre", "email", "numero_documento", "telefono"].includes(name)) {
+      if (["nombre"].includes(name)) {
           if (value.length > 0) {
               // Guardar el valor localmente para compararlo después
               const currentValue = latestValueRef.current[name];
@@ -282,7 +220,7 @@ const debounceValidate = debounce(async (user) => {
         {editMode ? "Editar Usuario" : "Crear Usuario"}
       </DialogHeader>
       <DialogBody className="p-4 space-y-1 max-h-80 overflow-y-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-0 gap-6">
           <div className="col-span-1">
             <Input
               label="Nombres y Apellidos"
@@ -293,18 +231,8 @@ const debounceValidate = debounce(async (user) => {
             />
             {formErrors.nombre && <p className="text-red-500 text-xs mt-1">{formErrors.nombre}</p>}
           </div>
-
-          <div className="col-span-1">
-            <Input
-              label="Email"
-              name="email"
-              value={selectedUser.email}
-              onChange={handleChange}
-              required
-            />
-            {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
-          </div>
-
+        
+        
           {!editMode && (
             <div className="col-span-1">
               <Input
@@ -319,80 +247,7 @@ const debounceValidate = debounce(async (user) => {
             </div>
           )}
 
-          <div className="col-span-1">
-          <Select
-              label="Tipo de Documento"
-              name="tipo_documento"
-              value={selectedUser.tipo_documento}
-              onChange={(value) => handleSelectChange("tipo_documento", value)}
-              required
-            >
-              <Option value="Cédula">Cédula</Option>
-              <Option value="NIT">NIT</Option>
-              <Option value="Pasaporte">Pasaporte</Option>
-              <Option value="Cédula Extranjería">Cédula Extranjería</Option>
-            </Select>
-            {formErrors.tipo_documento && <p className="text-red-500 text-xs mt-1">{formErrors.tipo_documento}</p>}
-          </div>
-
-          <div className="col-span-1">
-            <Input
-              label="Número de Documento"
-              name="numero_documento"
-              value={selectedUser.numero_documento}
-              onChange={handleChange}
-              required
-            />
-            {formErrors.numero_documento && <p className="text-red-500 text-xs mt-1">{formErrors.numero_documento}</p>}
-          </div>
-
-          <div className="col-span-1">
-          <Select
-              label="Género"
-              name="genero"
-              value={selectedUser.genero}
-              onChange={(value) => handleSelectChange("genero", value)}
-              required
-            >
-              <Option value="Masculino">Masculino</Option>
-              <Option value="Femenino">Femenino</Option>
-              <Option value="OTRO">Prefiero no Responder</Option>
-            </Select>
-            {formErrors.genero && <p className="text-red-500 text-xs mt-1">{formErrors.genero}</p>}
-          </div>
-
-          <div className="col-span-1">
-            <Input
-              label="Nacionalidad"
-              name="nacionalidad"
-              value={selectedUser.nacionalidad}
-              onChange={handleChange}
-              required
-            />
-            {formErrors.nacionalidad && <p className="text-red-500 text-xs mt-1">{formErrors.nacionalidad}</p>}
-          </div>
-
-          <div className="col-span-1">
-            <Input
-              label="Teléfono"
-              name="telefono"
-              value={selectedUser.telefono}
-              onChange={handleChange}
-              required
-            />
-            {formErrors.telefono && <p className="text-red-500 text-xs mt-1">{formErrors.telefono}</p>}
-          </div>
-
-          <div className="col-span-1">
-            <Input
-              label="Dirección"
-              name="direccion"
-              value={selectedUser.direccion}
-              onChange={handleChange}
-              required
-            />
-            {formErrors.direccion && <p className="text-red-500 text-xs mt-1">{formErrors.direccion}</p>}
-          </div>
+      
 
           <div className="col-span-1">
           <Select
